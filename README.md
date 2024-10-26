@@ -106,7 +106,7 @@ Once the model is trained, the next step is real-time detection using OpenCV and
    ```bash
    python real_time_detection.py
    ```
-![Image description](./pic1.png)
+
 ![Image description](./pic2.png)
 
 
