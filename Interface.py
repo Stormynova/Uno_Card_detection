@@ -6,48 +6,49 @@ import cv2
 from ultralytics import YOLO
 
 # Load the YOLO model
-model = YOLO(r"./runs/detect/train2/weights/best.pt")
+model = YOLO(r"./runs/detect/train/weights/best.pt")
 
 
-def get_dominant_color(image_path):
-    img_array = image_path
+# def get_dominant_color(image_path):
+#     img_array = image_path
 
-    # Calculate the mean color
-    mean_color = img_array.mean(axis=(0, 1))
+#     # Calculate the mean color
+#     mean_color = img_array.mean(axis=(0, 1))
 
-    # Define color ranges
-    red = mean_color[0]
-    green = mean_color[1]
-    blue = mean_color[2]
+#     # Define color ranges
+#     red = mean_color[0]
+#     green = mean_color[1]
+#     blue = mean_color[2]
 
-    # Determine the dominant color
-    if red > green and red > blue:
-        return "Red"
-    elif green > red and green > blue:
-        return "Green"
-    elif blue > red and blue > green:
-        return "Blue"
-    elif red > green and blue > green:
-        return "Yellow"  # Consider yellow as a mix of red and green
-    else:
-        return "Unknown"
+#     # Determine the dominant color
+#     if red > green and red > blue:
+#         return "Red"
+#     elif green > red and green > blue:
+#         return "Green"
+#     elif blue > red and blue > green:
+#         return "Blue"
+#     elif red > green and blue > green:
+#         return "Yellow"  # Consider yellow as a mix of red and green
+#     else:
+#         return "Unknown"
 
 
 def process_image(image):
+    image = image.convert("RGB")
     # Convert the image to a NumPy array for OpenCV processing
     image_np = np.array(image)
-    old_image = deepcopy(np.array(image))
+    # old_image = deepcopy(np.array(image))
 
     # Convert to grayscale
-    image_np = cv2.cvtColor(image_np, cv2.COLOR_RGB2GRAY)
+    # image_np = cv2.cvtColor(image_np, cv2.COLOR_GRAY2RGB)
 
     # Ensure image is in RGB format and handle different formats
-    if image_np.ndim == 3 and image_np.shape[2] == 3:  # RGB image
-        pass  # Already in RGB format
-    elif image_np.ndim == 2:  # Grayscale image
-        image_np = cv2.cvtColor(image_np, cv2.COLOR_GRAY2RGB)  # Convert grayscale to RGB
-    else:
-        raise ValueError("Unsupported image format")
+    # if image_np.ndim == 3 and image_np.shape[2] == 3:  # RGB image
+    #     pass  # Already in RGB format
+    # elif image_np.ndim == 2:  # Grayscale image
+    #     image_np = cv2.cvtColor(image_np, cv2.COLOR_GRAY2RGB)  # Convert grayscale to RGB
+    # else:
+    #     raise ValueError("Unsupported image format")
 
     # Ensure the image is not empty
     if image_np.size == 0:
@@ -59,7 +60,7 @@ def process_image(image):
 
     # Get predictions from your model (assuming the model expects RGB images)
     results = model.predict(image_resized)
-    image_np = old_image
+    # image_np = old_image
 
     labels = []
     colors = []
@@ -74,8 +75,8 @@ def process_image(image):
             x1, y1, x2, y2 = box
             label = f"{model.names[int(class_id)]}: {conf:.2f}"
             labels.append(label)
-            average_color = get_dominant_color(image_np)
-            colors.append(average_color)
+            # average_color = get_dominant_color(image_np)
+            # colors.append(average_color)
             cv2.rectangle(image_np, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
             cv2.putText(image_np, label, (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
@@ -110,8 +111,9 @@ def live_stream_prediction():
             # Draw boxes and labels on the frame
             for box, conf, class_id in zip(boxes, confidences, class_ids):
                 x1, y1, x2, y2 = box
-                color = get_dominant_color(frame)
-                label = f"{model.names[int(class_id)]}: {conf:.2f} :: Color: " + color
+                # color = get_dominant_color(frame)
+                label = f"{model.names[int(class_id)]}: {conf:.2f}"
+                # label = f"{model.names[int(class_id)]}: {conf:.2f} :: Color: " + color
                 cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
                 cv2.putText(frame, label, (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
@@ -153,7 +155,7 @@ if uploaded_file is not None:
             # Display the list of detected labels
             st.subheader("Detected Objects:")
             for ind, label in enumerate(labels):
-                st.write('1. ' + label, ' :: Color: ', colors[ind])
+                st.write('1. ' + label)
 
 # Button for live stream prediction
 if st.button("Start Live Stream Prediction"):
