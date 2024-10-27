@@ -108,6 +108,8 @@ Once the model is trained, the next step is real-time detection using OpenCV and
    ```
 
 ![Image description](./pic2.png)
+![Image description ](./runs/detect/predict/resize_IMG_5573_png.rf.d1859ba2f596d3b525485cf6cb42fdaa.jpg)
+![Image description ](./runs/detect/train/val_batch0_labels.jpg)
 
 
 ---
