@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 54
+names: ['lblue-1', 'lblue-10', 'lblue-2', 'lblue-3', 'lblue-4', 'lblue-5', 'lblue-6', 'lblue-7', 'lblue-8', 'lblue-9', 'lblueflip-20', 'lbluerevers-20', 'lblueskip-20', 'lcolor-40', 'lcolor2-50', 'lgreen-1', 'lgreen-10', 'lgreen-2', 'lgreen-3', 'lgreen-4', 'lgreen-5', 'lgreen-6', 'lgreen-7', 'lgreen-8', 'lgreen-9', 'lgreenflip-20', 'lgreenrevers-20', 'lgreenskip-20', 'lred-1', 'lred-10', 'lred-2', 'lred-3', 'lred-4', 'lred-5', 'lred-6', 'lred-7', 'lred-8', 'lred-9', 'lredflip-20', 'lredrevers-20', 'lredskip-20', 'lyellow-1', 'lyellow-10', 'lyellow-2', 'lyellow-3', 'lyellow-4', 'lyellow-5', 'lyellow-6', 'lyellow-7', 'lyellow-8', 'lyellow-9', 'lyellowflip-20', 'lyellowrevers-20', 'lyellowskip-20']
+
+roboflow:
+  workspace: ivan-moskalev-uwzkq
+  project: unocardmodel_v3
+  version: 3
+  license: Public Domain
+  url: https://universe.roboflow.com/ivan-moskalev-uwzkq/unocardmodel_v3/dataset/3
