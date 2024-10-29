@@ -6,7 +6,8 @@ import cv2
 from ultralytics import YOLO
 
 # Load the YOLO model
-model = YOLO(r"./runs/detect/train/weights/best.pt")
+# model = YOLO(r"./runs/detect/train/weights/best.pt")
+model = YOLO(r"best.pt")
 
 
 # def get_dominant_color(image_path):
@@ -34,8 +35,9 @@ model = YOLO(r"./runs/detect/train/weights/best.pt")
 
 
 def process_image(image):
-    image = image.convert("RGB")
+    # image = image.convert("RGB")
     # Convert the image to a NumPy array for OpenCV processing
+    results = model.predict(source=r"C:\Users\Abdullah Warraich\Downloads\Screenshot 2024-10-28 120631.png")  # Use path to your image
     image_np = np.array(image)
     # old_image = deepcopy(np.array(image))
 
@@ -59,7 +61,7 @@ def process_image(image):
     image_resized = cv2.resize(image_np, desired_size, interpolation=cv2.INTER_LINEAR)
 
     # Get predictions from your model (assuming the model expects RGB images)
-    results = model.predict(image_resized)
+    # results = model.predict(image_resized)
     # image_np = old_image
 
     labels = []
@@ -84,6 +86,9 @@ def process_image(image):
 
     return annotated_image, labels, colors
 
+
+colors = {'0': 'red', '1': 'yellow', '2': 'green', '3': 'blue', '4': 'No Color'}
+value = {'0': '0','1': '1','2': '2','3': '3','4': '4','5': '5','6': '6','7': '7','8': '8','9': '9','A': 'Reverse','B': 'Skip','C': 'Draw Two',}
 
 def live_stream_prediction():
     cap = cv2.VideoCapture(0)
@@ -113,6 +118,15 @@ def live_stream_prediction():
                 x1, y1, x2, y2 = box
                 # color = get_dominant_color(frame)
                 label = f"{model.names[int(class_id)]}: {conf:.2f}"
+                required_color = colors[label[0]]
+                if '40' in label:
+                    label = 'Color: {} <==> Value: +4 Card'.format('No Color')
+                elif '41' in label:
+                    label = 'Color: {} <==> Value: Wild Card'.format('No Color')
+                else:
+                    label = 'Color: {} <==> Value: {}'.format(required_color, value[label[1]])
+
+
                 # label = f"{model.names[int(class_id)]}: {conf:.2f} :: Color: " + color
                 cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
                 cv2.putText(frame, label, (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
@@ -138,6 +152,7 @@ uploaded_file = st.file_uploader("Upload an Image", type=["png", "jpg", "jpeg"])
 if uploaded_file is not None:
     # Display the uploaded image
     image = Image.open(uploaded_file)
+    print("Path is: ", uploaded_file)
 
     # Button to process the image
     if st.button("Process Image"):
