@@ -10,64 +10,27 @@ from ultralytics import YOLO
 model = YOLO(r"best.pt")
 
 
-# def get_dominant_color(image_path):
-#     img_array = image_path
-
-#     # Calculate the mean color
-#     mean_color = img_array.mean(axis=(0, 1))
-
-#     # Define color ranges
-#     red = mean_color[0]
-#     green = mean_color[1]
-#     blue = mean_color[2]
-
-#     # Determine the dominant color
-#     if red > green and red > blue:
-#         return "Red"
-#     elif green > red and green > blue:
-#         return "Green"
-#     elif blue > red and blue > green:
-#         return "Blue"
-#     elif red > green and blue > green:
-#         return "Yellow"  # Consider yellow as a mix of red and green
-#     else:
-#         return "Unknown"
-
-
 def process_image(image):
-    # image = image.convert("RGB")
     # Convert the image to a NumPy array for OpenCV processing
-    results = model.predict(source=r"C:\Users\Abdullah Warraich\Downloads\Screenshot 2024-10-28 120631.png")  # Use path to your image
     image_np = np.array(image)
-    # old_image = deepcopy(np.array(image))
 
-    # Convert to grayscale
-    # image_np = cv2.cvtColor(image_np, cv2.COLOR_GRAY2RGB)
-
-    # Ensure image is in RGB format and handle different formats
-    # if image_np.ndim == 3 and image_np.shape[2] == 3:  # RGB image
-    #     pass  # Already in RGB format
-    # elif image_np.ndim == 2:  # Grayscale image
-    #     image_np = cv2.cvtColor(image_np, cv2.COLOR_GRAY2RGB)  # Convert grayscale to RGB
-    # else:
-    #     raise ValueError("Unsupported image format")
+    # Convert RGB to BGR for OpenCV if necessary
+    image_np = cv2.cvtColor(image_np, cv2.COLOR_RGB2BGR)
 
     # Ensure the image is not empty
     if image_np.size == 0:
         raise ValueError("Input image is empty.")
 
-    # Resize or pad the image as necessary for your model
-    desired_size = (800, 800)  # Adjust based on your model's requirements
+    # Resize the image as necessary for your model
+    desired_size = (640, 640)  # Adjust based on your model's requirements
     image_resized = cv2.resize(image_np, desired_size, interpolation=cv2.INTER_LINEAR)
 
     # Get predictions from your model (assuming the model expects RGB images)
-    # results = model.predict(image_resized)
-    # image_np = old_image
-
+    results = model.predict(image_resized)  # Model output assumed to be in the resized size
     labels = []
     colors = []
 
-    # Loop through results and annotate the image
+    # Loop through results and annotate the resized image
     for result in results:
         boxes = result.boxes.xyxy.numpy()  # Get bounding box coordinates
         confidences = result.boxes.conf.numpy()  # Get confidence scores
@@ -77,12 +40,12 @@ def process_image(image):
             x1, y1, x2, y2 = box
             label = f"{model.names[int(class_id)]}: {conf:.2f}"
             labels.append(label)
-            # average_color = get_dominant_color(image_np)
-            # colors.append(average_color)
-            cv2.rectangle(image_np, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
-            cv2.putText(image_np, label, (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            # Set the color of the box and text as needed
+            cv2.rectangle(image_resized, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
+            cv2.putText(image_resized, label, (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
-    annotated_image = Image.fromarray(image_np)  # Convert back to RGB
+    # Convert the annotated image back to RGB format for PIL
+    annotated_image = Image.fromarray(cv2.cvtColor(image_resized, cv2.COLOR_BGR2RGB))
 
     return annotated_image, labels, colors
 
