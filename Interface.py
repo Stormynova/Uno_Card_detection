@@ -9,6 +9,9 @@ from ultralytics import YOLO
 # model = YOLO(r"./runs/detect/train/weights/best.pt")
 model = YOLO(r"best.pt")
 
+colors = {'0': 'red', '1': 'yellow', '2': 'green', '3': 'blue', '4': 'No Color'}
+value = {'0': '0','1': '1','2': '2','3': '3','4': '4','5': '5','6': '6','7': '7','8': '8','9': '9','A': 'Reverse','B': 'Skip','C': 'Draw Two',}
+
 
 def process_image(image):
     # Convert the image to a NumPy array for OpenCV processing
@@ -28,7 +31,7 @@ def process_image(image):
     # Get predictions from your model (assuming the model expects RGB images)
     results = model.predict(image_resized)  # Model output assumed to be in the resized size
     labels = []
-    colors = []
+    colors1 = []
 
     # Loop through results and annotate the resized image
     for result in results:
@@ -39,6 +42,14 @@ def process_image(image):
         for box, conf, class_id in zip(boxes, confidences, class_ids):
             x1, y1, x2, y2 = box
             label = f"{model.names[int(class_id)]}: {conf:.2f}"
+            print('Label is: ', label)
+            required_color = colors[label[0]]
+            if '40' in label:
+                label = 'Color: {} <==> Value: +4 Card'.format('No Color')
+            elif '41' in label:
+                label = 'Color: {} <==> Value: Wild Card'.format('No Color')
+            else:
+                label = 'Color: {} <==> Value: {}'.format(required_color, value[label[1]])
             labels.append(label)
             # Set the color of the box and text as needed
             cv2.rectangle(image_resized, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
@@ -47,11 +58,8 @@ def process_image(image):
     # Convert the annotated image back to RGB format for PIL
     annotated_image = Image.fromarray(cv2.cvtColor(image_resized, cv2.COLOR_BGR2RGB))
 
-    return annotated_image, labels, colors
+    return annotated_image, labels, colors1
 
-
-colors = {'0': 'red', '1': 'yellow', '2': 'green', '3': 'blue', '4': 'No Color'}
-value = {'0': '0','1': '1','2': '2','3': '3','4': '4','5': '5','6': '6','7': '7','8': '8','9': '9','A': 'Reverse','B': 'Skip','C': 'Draw Two',}
 
 def live_stream_prediction():
     cap = cv2.VideoCapture(0)
