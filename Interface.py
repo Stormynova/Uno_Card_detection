@@ -7,11 +7,12 @@ from ultralytics import YOLO
 
 # Load the YOLO model
 # model = YOLO(r"./runs/detect/train/weights/best.pt")
-model = YOLO(r"best.pt")
+model = YOLO(r"best_40_new.pt")
 
 colors = {'0': 'red', '1': 'yellow', '2': 'green', '3': 'blue', '4': 'No Color'}
 value = {'0': '0','1': '1','2': '2','3': '3','4': '4','5': '5','6': '6','7': '7','8': '8','9': '9','A': 'Reverse','B': 'Skip','C': 'Draw Two',}
 
+display_names = ['blue 1', 'blue 0', 'blue 2', 'blue 3', 'blue 4', 'blue 5', 'blue 6', 'blue 7', 'blue 8', 'blue 9', 'blue flip', 'blue revers', 'blue skip', 'Wild', 'Wild Draw Four', 'green 1', 'green 0', 'green 2', 'green 3', 'green 4', 'green 5', 'green 6', 'green 7', 'green 8', 'green 9', 'green flip', 'green revers', 'green skip', 'red 1', 'red 0', 'red 2', 'red 3', 'red 4', 'red 5', 'red 6', 'red 7', 'red 8', 'red 9', 'red flip', 'red revers', 'red skip', 'yellow 1', 'yellow 0', 'yellow 2', 'yellow 3', 'yellow 4', 'yellow 5', 'yellow 6', 'yellow 7', 'yellow 8', 'yellow 9', 'yellow flip', 'yellow revers', 'yellow skip']
 
 def process_image(image):
     # Convert the image to a NumPy array for OpenCV processing
@@ -41,15 +42,20 @@ def process_image(image):
 
         for box, conf, class_id in zip(boxes, confidences, class_ids):
             x1, y1, x2, y2 = box
-            label = f"{model.names[int(class_id)]}: {conf:.2f}"
+            card_name = display_names[int(class_id)].capitalize()
+            label = f"{card_name}, Confidence: {conf:.2f}"
             print('Label is: ', label)
-            required_color = colors[label[0]]
+            #will be removed later if not needed
+            """"
+            #required_color = colors[label[0]]
             if '40' in label:
                 label = 'Color: {} <==> Value: +4 Card'.format('No Color')
             elif '41' in label:
                 label = 'Color: {} <==> Value: Wild Card'.format('No Color')
             else:
-                label = 'Color: {} <==> Value: {}'.format(required_color, value[label[1]])
+                #label = 'Color: {} <==> Value: {}'.format(required_color, value[label[1]])
+                pass
+            """
             labels.append(label)
             # Set the color of the box and text as needed
             cv2.rectangle(image_resized, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
