@@ -1,4 +1,6 @@
 from copy import deepcopy
+from tkinter.font import names
+
 import streamlit as st
 from PIL import Image
 import numpy as np
@@ -7,69 +9,71 @@ from ultralytics import YOLO
 
 # Load the YOLO model
 # model = YOLO(r"./runs/detect/train/weights/best.pt")
-model = YOLO("best_80.pt")
+model = YOLO("best_70.pt")
 
 colors = {'0': 'red', '1': 'yellow', '2': 'green', '3': 'blue', '4': 'No Color'}
 value = {'0': '0','1': '1','2': '2','3': '3','4': '4','5': '5','6': '6','7': '7','8': '8','9': '9','A': 'Reverse','B': 'Skip','C': 'Draw Two',}
 
-#display_names = ['blue 1', 'blue 0', 'blue 2', 'blue 3', 'blue 4', 'blue 5', 'blue 6', 'blue 7', 'blue 8', 'blue 9', 'blue flip', 'blue revers', 'blue skip', 'Wild', 'Wild Draw Four', 'green 1', 'green 0', 'green 2', 'green 3', 'green 4', 'green 5', 'green 6', 'green 7', 'green 8', 'green 9', 'green flip', 'green revers', 'green skip', 'red 1', 'red 0', 'red 2', 'red 3', 'red 4', 'red 5', 'red 6', 'red 7', 'red 8', 'red 9', 'red flip', 'red revers', 'red skip', 'yellow 1', 'yellow 0', 'yellow 2', 'yellow 3', 'yellow 4', 'yellow 5', 'yellow 6', 'yellow 7', 'yellow 8', 'yellow 9', 'yellow flip', 'yellow revers', 'yellow skip']
-display_names = {
- 0: '+2 blue',
- 1: '+2 green',
- 2: '+2 red',
- 3: '+2 yellow',
- 4: 'Draw 4',
- 5: '0 blue',
- 6: '0 green',
- 7: '0 red',
- 8: '0 yellow',
- 9: '1 blue',
- 10: '1 green',
- 11: '1 red',
- 12: '1 yellow',
- 13: '2 blue',
- 14: '2 green',
- 15: '2 red',
- 16: '2 yellow',
- 17: '3 blue',
- 18: '3 green',
- 19: '3 red',
- 20: '3 yellow',
- 21: '4 blue',
- 22: '4 green',
- 23: '4 red',
- 24: '4 yellow',
- 25: '5 blue',
- 26: '5 green',
- 27: '5 red',
- 28: '5 yellow',
- 29: '6 blue',
- 30: '6 green',
- 31: '6 red',
- 32: '6 yellow',
- 33: '7 blue',
- 34: '7 green',
- 35: '7 red',
- 36: '7 yellow',
- 37: '8 blue',
- 38: '8 green',
- 39: '8 red',
- 40: '8 yellow',
- 41: '9 blue',
- 42: '9 green',
- 43: '9 red',
- 44: '9 yellow',
- 45: 'UNO greename',
- 46: 'choose',
- 47: 'reverse blue',
- 48: 'reverse green',
- 49: 'reverse red',
- 50: 'reverse yellow',
- 51: 'skip blue',
- 52: 'skip green',
- 53: 'skip red',
- 54: 'skip yellow'}
+class_to_cards = {
+    '00': '0 Red',
+    '01': '1 Red',
+    '02': '2 Red',
+    '03': '3 Red',
+    '04': '4 Red',
+    '05': '5 Red',
+    '06': '6 Red',
+    '07': '7 Red',
+    '08': '8 Red',
+    '09': '9 Red',
+    '0A': 'Reverse Red',
+    '0B': 'Skip Red',
+    '0C': '+2 Red',
 
+    '10': '0 Yellow',
+    '11': '1 Yellow',
+    '12': '2 Yellow',
+    '13': '3 Yellow',
+    '14': '4 Yellow',
+    '15': '5 Yellow',
+    '16': '6 Yellow',
+    '17': '7 Yellow',
+    '18': '8 Yellow',
+    '19': '9 Yellow',
+    '1A': 'Reverse Yellow',
+    '1B': 'Skip Yellow',
+    '1C': '+2 Yellow',
+
+    '20': '0 Green',
+    '21': '1 Green',
+    '22': '2 Green',
+    '23': '3 Green',
+    '24': '4 Green',
+    '25': '5 Green',
+    '26': '6 Green',
+    '27': '7 Green',
+    '28': '8 Green',
+    '29': '9 Green',
+    '2A': 'Reverse Green',
+    '2B': 'Skip Green',
+    '2C': '+2 Green',
+
+
+    '30': '0 Blue',
+    '31': '1 Blue',
+    '32': '2 Blue',
+    '33': '3 Blue',
+    '34': '4 Blue',
+    '35': '5 Blue',
+    '36': '6 Blue',
+    '37': '7 Blue',
+    '38': '8 Blue',
+    '39': '9 Blue',
+    '3A': 'Reverse Blue',
+    '3B': 'Skip Blue',
+    '3C': '+2 Blue',
+    '40': 'Draw 4',
+    '41': 'Wild Card',
+}
 
 def process_image(image):
     # Convert the image to a NumPy array for OpenCV processing
@@ -96,10 +100,11 @@ def process_image(image):
         boxes = result.boxes.xyxy.numpy()  # Get bounding box coordinates
         confidences = result.boxes.conf.numpy()  # Get confidence scores
         class_ids = result.boxes.cls.numpy()  # Get class IDs
-
+        names = result.names
         for box, conf, class_id in zip(boxes, confidences, class_ids):
             x1, y1, x2, y2 = box
-            card_name = display_names[int(class_id)].capitalize()
+            card_id = names[int(class_id)]
+            card_name = class_to_cards[card_id].capitalize()
             label = f"{card_name}, Confidence: {conf:.2f}"
             print('Label is: ', label)
             labels.append(label)
@@ -135,12 +140,14 @@ def live_stream_prediction():
             boxes = result.boxes.xyxy.numpy()  # Get bounding box coordinates
             confidences = result.boxes.conf.numpy()  # Get confidence scores
             class_ids = result.boxes.cls.numpy()  # Get class IDs
+            names = result.names
 
             # Draw boxes and labels on the frame
             for box, conf, class_id in zip(boxes, confidences, class_ids):
                 x1, y1, x2, y2 = box
                 # color = get_dominant_color(frame)
-                card_name = display_names[int(class_id)].capitalize()
+                card_id = names[int(class_id)]
+                card_name = class_to_cards[card_id].capitalize()
                 label = f"{card_name}, Confidence: {conf:.2f}"
                 # label = f"{model.names[int(class_id)]}: {conf:.2f} :: Color: " + color
                 cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
