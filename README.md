@@ -1,5 +1,7 @@
 # UnoCardDetection - Real-Time Card Detection with OpenCV
-
+broooooo 
+i need help in installing your code ,i am getting errors please help
+my email id-mayankdce2k19ec107@gmail.com
 ## Overview
 
 **UnoCardDetection** is a real-time card detection system designed using OpenCV for image processing. This project allows you to detect cards (with color and number recognition) using a webcam, based on a trained machine learning model. The system uses an annotated dataset for training and relies on computer vision techniques for live detection and tracking. 
