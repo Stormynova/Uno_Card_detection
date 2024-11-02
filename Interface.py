@@ -7,12 +7,69 @@ from ultralytics import YOLO
 
 # Load the YOLO model
 # model = YOLO(r"./runs/detect/train/weights/best.pt")
-model = YOLO(r"best_40_new.pt")
+model = YOLO("best_80.pt")
 
 colors = {'0': 'red', '1': 'yellow', '2': 'green', '3': 'blue', '4': 'No Color'}
 value = {'0': '0','1': '1','2': '2','3': '3','4': '4','5': '5','6': '6','7': '7','8': '8','9': '9','A': 'Reverse','B': 'Skip','C': 'Draw Two',}
 
-display_names = ['blue 1', 'blue 0', 'blue 2', 'blue 3', 'blue 4', 'blue 5', 'blue 6', 'blue 7', 'blue 8', 'blue 9', 'blue flip', 'blue revers', 'blue skip', 'Wild', 'Wild Draw Four', 'green 1', 'green 0', 'green 2', 'green 3', 'green 4', 'green 5', 'green 6', 'green 7', 'green 8', 'green 9', 'green flip', 'green revers', 'green skip', 'red 1', 'red 0', 'red 2', 'red 3', 'red 4', 'red 5', 'red 6', 'red 7', 'red 8', 'red 9', 'red flip', 'red revers', 'red skip', 'yellow 1', 'yellow 0', 'yellow 2', 'yellow 3', 'yellow 4', 'yellow 5', 'yellow 6', 'yellow 7', 'yellow 8', 'yellow 9', 'yellow flip', 'yellow revers', 'yellow skip']
+#display_names = ['blue 1', 'blue 0', 'blue 2', 'blue 3', 'blue 4', 'blue 5', 'blue 6', 'blue 7', 'blue 8', 'blue 9', 'blue flip', 'blue revers', 'blue skip', 'Wild', 'Wild Draw Four', 'green 1', 'green 0', 'green 2', 'green 3', 'green 4', 'green 5', 'green 6', 'green 7', 'green 8', 'green 9', 'green flip', 'green revers', 'green skip', 'red 1', 'red 0', 'red 2', 'red 3', 'red 4', 'red 5', 'red 6', 'red 7', 'red 8', 'red 9', 'red flip', 'red revers', 'red skip', 'yellow 1', 'yellow 0', 'yellow 2', 'yellow 3', 'yellow 4', 'yellow 5', 'yellow 6', 'yellow 7', 'yellow 8', 'yellow 9', 'yellow flip', 'yellow revers', 'yellow skip']
+display_names = {
+ 0: '+2 blue',
+ 1: '+2 green',
+ 2: '+2 red',
+ 3: '+2 yellow',
+ 4: 'Draw 4',
+ 5: '0 blue',
+ 6: '0 green',
+ 7: '0 red',
+ 8: '0 yellow',
+ 9: '1 blue',
+ 10: '1 green',
+ 11: '1 red',
+ 12: '1 yellow',
+ 13: '2 blue',
+ 14: '2 green',
+ 15: '2 red',
+ 16: '2 yellow',
+ 17: '3 blue',
+ 18: '3 green',
+ 19: '3 red',
+ 20: '3 yellow',
+ 21: '4 blue',
+ 22: '4 green',
+ 23: '4 red',
+ 24: '4 yellow',
+ 25: '5 blue',
+ 26: '5 green',
+ 27: '5 red',
+ 28: '5 yellow',
+ 29: '6 blue',
+ 30: '6 green',
+ 31: '6 red',
+ 32: '6 yellow',
+ 33: '7 blue',
+ 34: '7 green',
+ 35: '7 red',
+ 36: '7 yellow',
+ 37: '8 blue',
+ 38: '8 green',
+ 39: '8 red',
+ 40: '8 yellow',
+ 41: '9 blue',
+ 42: '9 green',
+ 43: '9 red',
+ 44: '9 yellow',
+ 45: 'UNO greename',
+ 46: 'choose',
+ 47: 'reverse blue',
+ 48: 'reverse green',
+ 49: 'reverse red',
+ 50: 'reverse yellow',
+ 51: 'skip blue',
+ 52: 'skip green',
+ 53: 'skip red',
+ 54: 'skip yellow'}
+
 
 def process_image(image):
     # Convert the image to a NumPy array for OpenCV processing
@@ -45,17 +102,6 @@ def process_image(image):
             card_name = display_names[int(class_id)].capitalize()
             label = f"{card_name}, Confidence: {conf:.2f}"
             print('Label is: ', label)
-            #will be removed later if not needed
-            """"
-            #required_color = colors[label[0]]
-            if '40' in label:
-                label = 'Color: {} <==> Value: +4 Card'.format('No Color')
-            elif '41' in label:
-                label = 'Color: {} <==> Value: Wild Card'.format('No Color')
-            else:
-                #label = 'Color: {} <==> Value: {}'.format(required_color, value[label[1]])
-                pass
-            """
             labels.append(label)
             # Set the color of the box and text as needed
             cv2.rectangle(image_resized, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
@@ -94,16 +140,8 @@ def live_stream_prediction():
             for box, conf, class_id in zip(boxes, confidences, class_ids):
                 x1, y1, x2, y2 = box
                 # color = get_dominant_color(frame)
-                label = f"{model.names[int(class_id)]}: {conf:.2f}"
-                required_color = colors[label[0]]
-                if '40' in label:
-                    label = 'Color: {} <==> Value: +4 Card'.format('No Color')
-                elif '41' in label:
-                    label = 'Color: {} <==> Value: Wild Card'.format('No Color')
-                else:
-                    label = 'Color: {} <==> Value: {}'.format(required_color, value[label[1]])
-
-
+                card_name = display_names[int(class_id)].capitalize()
+                label = f"{card_name}, Confidence: {conf:.2f}"
                 # label = f"{model.names[int(class_id)]}: {conf:.2f} :: Color: " + color
                 cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
                 cv2.putText(frame, label, (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
