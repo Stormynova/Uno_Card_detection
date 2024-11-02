@@ -1,6 +1,4 @@
 from copy import deepcopy
-from tkinter.font import names
-
 import streamlit as st
 from PIL import Image
 import numpy as np
@@ -9,71 +7,11 @@ from ultralytics import YOLO
 
 # Load the YOLO model
 # model = YOLO(r"./runs/detect/train/weights/best.pt")
-model = YOLO("best_70.pt")
+model = YOLO(r"best.pt")
 
 colors = {'0': 'red', '1': 'yellow', '2': 'green', '3': 'blue', '4': 'No Color'}
 value = {'0': '0','1': '1','2': '2','3': '3','4': '4','5': '5','6': '6','7': '7','8': '8','9': '9','A': 'Reverse','B': 'Skip','C': 'Draw Two',}
 
-class_to_cards = {
-    '00': '0 Red',
-    '01': '1 Red',
-    '02': '2 Red',
-    '03': '3 Red',
-    '04': '4 Red',
-    '05': '5 Red',
-    '06': '6 Red',
-    '07': '7 Red',
-    '08': '8 Red',
-    '09': '9 Red',
-    '0A': 'Reverse Red',
-    '0B': 'Skip Red',
-    '0C': '+2 Red',
-
-    '10': '0 Yellow',
-    '11': '1 Yellow',
-    '12': '2 Yellow',
-    '13': '3 Yellow',
-    '14': '4 Yellow',
-    '15': '5 Yellow',
-    '16': '6 Yellow',
-    '17': '7 Yellow',
-    '18': '8 Yellow',
-    '19': '9 Yellow',
-    '1A': 'Reverse Yellow',
-    '1B': 'Skip Yellow',
-    '1C': '+2 Yellow',
-
-    '20': '0 Green',
-    '21': '1 Green',
-    '22': '2 Green',
-    '23': '3 Green',
-    '24': '4 Green',
-    '25': '5 Green',
-    '26': '6 Green',
-    '27': '7 Green',
-    '28': '8 Green',
-    '29': '9 Green',
-    '2A': 'Reverse Green',
-    '2B': 'Skip Green',
-    '2C': '+2 Green',
-
-
-    '30': '0 Blue',
-    '31': '1 Blue',
-    '32': '2 Blue',
-    '33': '3 Blue',
-    '34': '4 Blue',
-    '35': '5 Blue',
-    '36': '6 Blue',
-    '37': '7 Blue',
-    '38': '8 Blue',
-    '39': '9 Blue',
-    '3A': 'Reverse Blue',
-    '3B': 'Skip Blue',
-    '3C': '+2 Blue',
-    '40': 'Draw 4',
-    '41': 'Wild Card',
-}
 
 def process_image(image):
     # Convert the image to a NumPy array for OpenCV processing
@@ -100,13 +38,18 @@ def process_image(image):
         boxes = result.boxes.xyxy.numpy()  # Get bounding box coordinates
         confidences = result.boxes.conf.numpy()  # Get confidence scores
         class_ids = result.boxes.cls.numpy()  # Get class IDs
-        names = result.names
+
         for box, conf, class_id in zip(boxes, confidences, class_ids):
             x1, y1, x2, y2 = box
-            card_id = names[int(class_id)]
-            card_name = class_to_cards[card_id].capitalize()
-            label = f"{card_name}, Confidence: {conf:.2f}"
+            label = f"{model.names[int(class_id)]}: {conf:.2f}"
             print('Label is: ', label)
+            required_color = colors[label[0]]
+            if '40' in label:
+                label = 'Color: {} <==> Value: +4 Card'.format('No Color')
+            elif '41' in label:
+                label = 'Color: {} <==> Value: Wild Card'.format('No Color')
+            else:
+                label = 'Color: {} <==> Value: {}'.format(required_color, value[label[1]])
             labels.append(label)
             # Set the color of the box and text as needed
             cv2.rectangle(image_resized, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
@@ -140,15 +83,21 @@ def live_stream_prediction():
             boxes = result.boxes.xyxy.numpy()  # Get bounding box coordinates
             confidences = result.boxes.conf.numpy()  # Get confidence scores
             class_ids = result.boxes.cls.numpy()  # Get class IDs
-            names = result.names
 
             # Draw boxes and labels on the frame
             for box, conf, class_id in zip(boxes, confidences, class_ids):
                 x1, y1, x2, y2 = box
                 # color = get_dominant_color(frame)
-                card_id = names[int(class_id)]
-                card_name = class_to_cards[card_id].capitalize()
-                label = f"{card_name}, Confidence: {conf:.2f}"
+                label = f"{model.names[int(class_id)]}: {conf:.2f}"
+                required_color = colors[label[0]]
+                if '40' in label:
+                    label = 'Color: {} <==> Value: +4 Card'.format('No Color')
+                elif '41' in label:
+                    label = 'Color: {} <==> Value: Wild Card'.format('No Color')
+                else:
+                    label = 'Color: {} <==> Value: {}'.format(required_color, value[label[1]])
+
+
                 # label = f"{model.names[int(class_id)]}: {conf:.2f} :: Color: " + color
                 cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
                 cv2.putText(frame, label, (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
@@ -204,3 +153,4 @@ st.markdown("---")
 st.markdown("### About this App")
 st.markdown("This app allows you to upload an image and processes it by identifying objects using YOLO.")
 st.markdown("Made with ❤️ by Streamlit.")
+
