@@ -8,6 +8,7 @@
 
 - **Annotated Dataset**: The model is trained on an annotated dataset of cards, where each card is labeled with its number and color.
 - **Real-Time Detection**: The system uses your webcam to detect cards in real-time, identifying both the card's number and color.
+- **Uploaded image Detection**: The system also includes a function which enables users to upload images for detection instead of live streamed images.
 - **OpenCV Integration**: OpenCV is used for processing live video streams from the webcam, preprocessing images, and detecting card features.
 - **Model Training**: The project supports custom model training based on your own dataset for accurate and specific card detection.
   
@@ -90,7 +91,7 @@ Once the model is trained, the next step is real-time detection using OpenCV and
 
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/YourUsername/Uno_Card_detection_System.git
+   git clone https://github.com/Stormynova/Uno_Card_detection_System.git
    cd UnoCardDetection
    ```
 
