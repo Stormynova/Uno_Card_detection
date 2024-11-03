@@ -10,14 +10,11 @@
 - **Real-Time Detection**: The system uses your webcam to detect cards in real-time, identifying both the card's number and color.
 - **Uploaded image Detection**: The system also includes a function which enables users to upload images for detection instead of live streamed images.
 - **OpenCV Integration**: OpenCV is used for processing live video streams from the webcam, preprocessing images, and detecting card features.
-- **Model Training**: The project supports custom model training based on your own dataset for accurate and specific card detection.
-  
+
 ---
 
 ## Table of Contents
 - [Getting Started](#getting-started)
-- [Annotated Dataset](#annotated-dataset)
-- [Model Training](#model-training)
 - [Real-Time Detection](#real-time-detection)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -42,9 +39,7 @@ Before you begin, ensure you have the following installed on your machine:
 
 ---
 
-## Annotated Dataset
 
-The foundation of the UnoCardDetection system lies in a well-annotated dataset. Here's how the dataset is structured and why it's essential.
 
 ### What is an Annotated Dataset?
 
@@ -60,7 +55,6 @@ You can use tools like **LabelImg** to annotate images by drawing bounding boxes
 
 ---
 
-## Model Training
 
 ### Choosing a Model
 
@@ -115,6 +109,7 @@ Once the model is trained, the next step is real-time detection using OpenCV and
 ## Usage
 
 1. Upload an image of an Uno card, the system works best with images with a clear or plain background, it still works with images with a complicated background, but with lower success.
+2. for the image uploder, the images should be taken at a medium distance from the card, about 45 cm 
    
 
 ## Live Testing
