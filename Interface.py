@@ -28,8 +28,42 @@ def process_image(image):
     desired_size = (640, 640)  # Adjust based on your model's requirements
     image_resized = cv2.resize(image_np, desired_size, interpolation=cv2.INTER_LINEAR)
 
-    # Get predictions from your model (assuming the model expects RGB images)
-    results = model.predict(image_resized)  # Model output assumed to be in the resized size
+
+    modifications = [
+        "original",
+        "contrast",
+        "brightness",
+        "sharpen",
+        "blur",
+        "equalize"
+    ]
+        
+    best_results = None
+    best_confidence = -1
+
+    # Try each modification until we get a good detection
+    for modification in modifications:
+        modified_img = _apply_modification(image_resized, modification)
+        results = model.predict(modified_img)
+        
+        if len(results) > 0 and len(results[0].boxes) > 0:
+            total_confidence = results[0].boxes.conf.numpy().mean()
+            
+            if total_confidence > best_confidence:
+                best_confidence = total_confidence
+                best_results = results
+                best_modified_img = modified_img.copy()
+                
+                # If we got a very good detection, we can stop
+                if total_confidence > 0.8:
+                   break
+    
+    # If no detection was successful, return the original image
+    if best_results is None:
+        return (Image.fromarray(cv2.cvtColor(image_resized, cv2.COLOR_BGR2RGB)), 
+                [], [])
+
+
     labels = []
     colors1 = []
 
@@ -41,9 +75,11 @@ def process_image(image):
 
         for box, conf, class_id in zip(boxes, confidences, class_ids):
             x1, y1, x2, y2 = box
+
             label = f"{model.names[int(class_id)]}: {conf:.2f}"
             print('Label is: ', label)
             required_color = colors[label[0]]
+
             if '40' in label:
                 label = 'Color: {} <==> Value: +4 Card'.format('No Color')
             elif '41' in label:
@@ -52,13 +88,43 @@ def process_image(image):
                 label = 'Color: {} <==> Value: {}'.format(required_color, value[label[1]])
             labels.append(label)
             # Set the color of the box and text as needed
-            cv2.rectangle(image_resized, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
-            cv2.putText(image_resized, label, (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
+            cv2.rectangle(best_modified_img, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
+            cv2.putText(best_modified_img, label, (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
     # Convert the annotated image back to RGB format for PIL
-    annotated_image = Image.fromarray(cv2.cvtColor(image_resized, cv2.COLOR_BGR2RGB))
+    annotated_image = Image.fromarray(cv2.cvtColor(best_modified_img, cv2.COLOR_BGR2RGB))
 
     return annotated_image, labels, colors1
+
+
+
+def _apply_modification(image: np.ndarray, modification: str) -> np.ndarray:
+    """Apply various image modifications to improve detection."""
+    img = image.copy()
+    
+    if modification == "original":
+        return img
+        
+    elif modification == "contrast":
+        return cv2.convertScaleAbs(img, alpha=1.5, beta=0)
+        
+    elif modification == "brightness":
+        return cv2.convertScaleAbs(img, alpha=1.0, beta=30)
+        
+    elif modification == "sharpen":
+        kernel = np.array([[-1,-1,-1], 
+                            [-1, 9,-1],
+                            [-1,-1,-1]])
+        return cv2.filter2D(img, -1, kernel)
+        
+    elif modification == "blur":
+        return cv2.GaussianBlur(img, (3,3), 0)
+        
+    elif modification == "equalize":
+        img_yuv = cv2.cvtColor(img, cv2.COLOR_BGR2YUV)
+        img_yuv[:,:,0] = cv2.equalizeHist(img_yuv[:,:,0])
+        return cv2.cvtColor(img_yuv, cv2.COLOR_YUV2BGR)
+    return img
 
 
 def live_stream_prediction():
