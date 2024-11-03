@@ -100,12 +100,9 @@ Once the model is trained, the next step is real-time detection using OpenCV and
    pip install -r requirements.txt
    ```
 
-3. **Train the Model**:
-   Follow the steps outlined in the `model_training.md` file to train your model with the annotated dataset.
-
-4. **Run Real-Time Detection**:
+3. **Run Real-Time Detection**:
    ```bash
-   python real_time_detection.py
+   run the runner.bat file
    ```
 
 ![Image description](./pic2.png)
@@ -117,10 +114,12 @@ Once the model is trained, the next step is real-time detection using OpenCV and
 
 ## Usage
 
-1. **Create your annotated dataset** or use an existing one for card detection.
-2. **Train the detection model** using your dataset.
-3. **Run the real-time card detection** script to use the webcam and identify cards.
+1. Upload an image of an Uno card, the system works best with images with a clear or plain background, it still works with images with a complicated background, but with lower success.
+   
 
+## Live Testing
+
+link : https://youtu.be/0VTGHmNaSyc
 ---
 
 ## Contributing
