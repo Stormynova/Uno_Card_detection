@@ -15,6 +15,7 @@
 
 ## Table of Contents
 - [Getting Started](#getting-started)
+- [Testing](#Testing)
 - [Real-Time Detection](#real-time-detection)
 - [Installation](#installation)
 - [Usage](#usage)
@@ -26,6 +27,11 @@
 ## Getting Started
 
 To get started with the UnoCardDetection system, follow the steps to install dependencies, prepare the dataset, train the model, and perform real-time detection using a webcam.
+
+## Testing
+
+This model has been rigorously tested, the testing files can be viewed. The images below show the testing of the final model.
+
 
 ### Prerequisites
 
