@@ -120,7 +120,7 @@ Once the model is trained, the next step is real-time detection using OpenCV and
 
 ## Live Testing
 
-link : https://youtu.be/0VTGHmNaSyc
+link : https://youtu.be/GueZnZKbhPA
 ---
 
 ## Contributing
