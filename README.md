@@ -1,3 +1,12 @@
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Python](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
+[![OpenCV](https://img.shields.io/badge/OpenCV-4.x-green.svg)](https://opencv.org/)
+[![Streamlit](https://img.shields.io/badge/Streamlit-1.x-red.svg)](https://streamlit.io/)
+[![YOLOv8](https://img.shields.io/badge/YOLOv8-latest-blue.svg)](https://github.com/ultralytics/ultralytics)
+
+[![Test Model](https://img.shields.io/badge/Test%20Model-Live%20Demo-brightgreen)](https://uno-detector.streamlit.app/)
+
+
 # UnoCardDetection - Real-Time Card Detection with OpenCV
 
 ## Overview
@@ -102,10 +111,11 @@ Once the model is trained, the next step is real-time detection using OpenCV and
 
 3. **Run Real-Time Detection**:
    ```bash
-   run the runner.bat file
+   chmod +x runner.bat
+   ./runner.bat
    ```
 
-![Image description](./pic2.png)
+![Image description](./img/pic2.png)
 ![Image description ](./runs/detect/predict/resize_IMG_5573_png.rf.d1859ba2f596d3b525485cf6cb42fdaa.jpg)
 ![Image description ](./runs/detect/train/val_batch0_labels.jpg)
 
@@ -125,10 +135,10 @@ link : https://youtu.be/GueZnZKbhPA
 
 ## Contributing
 
-If you'd like to contribute to UnoCardDetection, feel free to submit pull requests or open issues. Contributions to improve the model or add more features are always welcome.
+Please refer to the [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines on how to contribute to this project.
 
 ---
 
 ## License
 
-This project is licensed under the MIT License.
+Please refer to the [LICENSE](LICENSE) file for more information.
