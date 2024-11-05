@@ -1,3 +1,4 @@
 streamlit
-opencv-python-headless
+opencv-python
 ultralytics
+roboflow

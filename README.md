@@ -7,11 +7,13 @@
 [![Test Model](https://img.shields.io/badge/Test%20Model-Live%20Demo-brightgreen)](https://uno-detector.streamlit.app/)
 
 
-# UnoCardDetection - Real-Time Card Detection with OpenCV
+<div align="center" style="display: flex; align-items: center; justify-content: center; gap: 20px;">
+<h1>UnoCardDetection - Real-Time Card Detection using YOLOv8 and OpenCV</h1>
+<img src="./img/cover.png" alt="UNO card detection demo" width="200">
+</div>
 
 ## Overview
-
-**UnoCardDetection** is a real-time card detection system designed using OpenCV for image processing. This project allows you to detect cards (with color and number recognition) using a webcam, based on a trained machine learning model. The system uses an annotated dataset for training and relies on computer vision techniques for live detection and tracking. 
+**UnoCardDetection** is a computer vision project that uses YOLOv8 and OpenCV to detect and classify UNO cards in real-time. The system can identify all standard UNO cards including numbers (0-9), action cards (Skip, Reverse, Draw Two), and wild cards through either a webcam feed or uploaded images. Built with a custom-trained YOLOv8 model on an extensively annotated dataset, it provides accurate card detection and classification even in varying lighting conditions and card orientations.
 
 ## Features
 
@@ -19,15 +21,28 @@
 - **Real-Time Detection**: The system uses your webcam to detect cards in real-time, identifying both the card's number and color.
 - **Uploaded image Detection**: The system also includes a function which enables users to upload images for detection instead of live streamed images.
 - **OpenCV Integration**: OpenCV is used for processing live video streams from the webcam, preprocessing images, and detecting card features.
+- **Streamlit**: The project is built using Streamlit, a live web app is provided for testing the model.
 
 ---
 
 ## Table of Contents
+- [Overview](#overview)
+- [Features](#features)
+- [Table of Contents](#table-of-contents)
 - [Getting Started](#getting-started)
-- [Testing](#Testing)
+- [Testing](#testing)
+  - [Dataset Testing](#dataset-testing)
+  - [What is an Annotated Dataset?](#what-is-an-annotated-dataset)
+  - [Why We Need Annotation?](#why-we-need-annotation)
+  - [How to Create an Annotated Dataset?](#how-to-create-an-annotated-dataset)
+  - [Choosing a Model](#choosing-a-model)
+  - [Training the Model](#training-the-model)
 - [Real-Time Detection](#real-time-detection)
+  - [How It Works](#how-it-works)
 - [Installation](#installation)
+  - [Prerequisites](#prerequisites)
 - [Usage](#usage)
+- [Live Testing](#live-testing)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -39,22 +54,20 @@ To get started with the UnoCardDetection system, follow the steps to install dep
 
 ## Testing
 
+### Dataset Testing
+Follow the links below to view the testing results of the model on the dataset.
+1. [![Dataset Testing](https://img.shields.io/badge/Dataset%20Testing-UNO--DATASET--2-brightgreen)](./UNO-DATASET--2/README.md)
+2. [![Dataset Testing](https://img.shields.io/badge/Dataset%20Testing-UNO--DATASET--3-brightgreen)](./UNO-DATASET--3/README.md)
+
 This model has been rigorously tested, the testing files can be viewed. The images below show the testing of the final model.
 
+<!-- <img src="./img/hist_uno.png" alt="Image description" width="700"> -->
+<!-- The above image shows the histogram of the dataset (UNO-DATASET--3) that we used to train the model. -->
 
-### Prerequisites
+<!-- <img src="./img/val_batch0_labels.jpg" alt="Image description" width="700"> -->
 
-Before you begin, ensure you have the following installed on your machine:
-
-- Python 3.8+
-- OpenCV
-- TensorFlow or PyTorch (depending on the model you choose)
-- LabelImg (for data annotation)
-- Webcam (for real-time detection)
 
 ---
-
-
 
 ### What is an Annotated Dataset?
 
@@ -98,10 +111,53 @@ Once the model is trained, the next step is real-time detection using OpenCV and
 
 ## Installation
 
+
+### Prerequisites
+
+Before you begin, ensure you have the following installed on your machine:
+
+- Python 3.8+
+- OpenCV # For image processing
+- Ultralytics # For model training
+- Roboflow # For dataset annotation
+- Matplotlib # For visualization
+
+Installing python, pip, and virtual environment:
+
+For Linux (Ubuntu, Debian, etc.):
+```bash
+# install pip
+sudo apt-get install python3-pip
+# install venv
+sudo apt-get install python3-venv
+# create virtual environment
+python3 -m venv uno-env
+# activate virtual environment
+source uno-env/bin/activate
+```
+
+For MacOS:
+```bash
+# create virtual environment
+python3 -m venv uno-env
+# activate virtual environment
+source uno-env/bin/activate
+```
+
+For Windows:
+```bash
+# create virtual environment
+python -m venv uno-env
+# activate virtual environment
+uno-env\Scripts\activate
+```
+
+Now,
+
 1. **Clone the Repository**:
    ```bash
-   git clone https://github.com/Stormynova/Uno_Card_detection_System.git
-   cd UnoCardDetection
+   git clone https://github.com/Stormynova/Uno_Card_detection.git
+   cd Uno_Card_detection
    ```
 
 2. **Install Dependencies**:
@@ -114,23 +170,32 @@ Once the model is trained, the next step is real-time detection using OpenCV and
    chmod +x runner.bat
    ./runner.bat
    ```
+The above command will run the real-time detection app locally. Open http://localhost:8501/ in your browser to view the app.
 
-![Image description](./img/pic2.png)
+## Usage
+
+1. Upload an image of an Uno card, the system works best with images with a clear or plain background, it still works with images with a complicated background, but with lower success.
+2. For the image uploder, the images should be taken at a medium distance from the card, about 45 cm 
+   
+<img src="./img/pic2.png" alt="Image description" width="500">
+
+<!-- predict image -->
 ![Image description ](./runs/detect/predict/resize_IMG_5573_png.rf.d1859ba2f596d3b525485cf6cb42fdaa.jpg)
 ![Image description ](./runs/detect/train/val_batch0_labels.jpg)
 
 
 ---
 
-## Usage
-
-1. Upload an image of an Uno card, the system works best with images with a clear or plain background, it still works with images with a complicated background, but with lower success.
-2. for the image uploder, the images should be taken at a medium distance from the card, about 45 cm 
-   
 
 ## Live Testing
 
-link : https://youtu.be/GueZnZKbhPA
+Click to view the live testing video on Youtube:
+<!-- add gif link -->
+<a href="https://youtu.be/GueZnZKbhPA">
+<img src="./img/live-demo.gif" alt="Live testing" width="500">
+</a>
+
+
 ---
 
 ## Contributing
