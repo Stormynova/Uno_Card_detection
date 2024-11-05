@@ -141,6 +141,8 @@ def _apply_modification(image, modification):
 # Function for live stream prediction with camera
 def live_stream_prediction():
     cap = cv2.VideoCapture(0)
+    frame_placeholder = st.empty()
+    
     if not cap.isOpened():
         print("Error: Could not open camera.")
         exit()
@@ -168,14 +170,10 @@ def live_stream_prediction():
                 cv2.rectangle(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 0), 2)
                 cv2.putText(frame, label, (int(x1), int(y1) - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
 
-        cv2.imshow("YOLO Inference", frame)
-
-        # Exit if 'q' is pressed
-        if cv2.waitKey(1) & 0xFF == ord('q'):
-            break
+        frame_placeholder.image(frame, channels="BGR")
 
     cap.release()
-    cv2.destroyAllWindows()
+    # cv2.destroyAllWindows()
 
 # Streamlit interface setup
 st.title("UNO Card Detection")
