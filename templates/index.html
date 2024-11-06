@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>UNO Card Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+        }
+        .button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        #preview {
+            width: 400px;
+            margin: 20px;
+            display: none;
+        }
+        #result {
+            width: 400px;
+            margin: 20px;
+        }
+        .upload-section {
+            margin: 20px;
+            padding: 20px;
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+        }
+        .image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to UNO Card Detection</h1>
+    
+    <div class="upload-section">
+        <h2>Image Upload Detection</h2>
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="file" id="imageInput" name="image" accept="image/*">
+            <button type="submit" class="button">Process Image</button>
+        </form>
+        <div class="image-container">
+            <img id="preview">
+            <img id="result">
+        </div>
+    </div>
+
+    <div>
+        <h2>Video Detection</h2>
+        <p>Click the button below to start video detection</p>
+        <a href="{{ url_for('start_video') }}" class="button">Start Video Detection</a>
+    </div>
+
+    <script>
+        // Preview uploaded image
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const preview = document.getElementById('preview');
+            const file = e.target.files[0];
+            if (file) {
+                preview.src = URL.createObjectURL(file);
+                preview.style.display = 'block';
+            }
+        });
+
+        // Handle form submission
+        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            
+            try {
+                const response = await fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    document.getElementById('result').src = URL.createObjectURL(blob);
+                } else {
+                    alert('Error processing image');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error uploading image');
+            }
+        });
+    </script>
+</body>
+</html>

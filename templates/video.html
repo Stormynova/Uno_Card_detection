@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>UNO Card Detection - Video Feed</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+        h1 {
+            color: #333;
+        }
+        .video-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px auto;
+            max-width: 1020px;
+        }
+        .video-feed {
+            width: 500px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        video {
+            width: 100%;
+            height: auto;
+        }
+        .back-button {
+            display: inline-block;
+            padding: 10px 20px;
+            margin: 20px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        .back-button:hover {
+            background-color: #45a049;
+        }
+        #processedFrame {
+            width: 500px;
+            height: auto;
+            border: 2px solid #333;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <h1>UNO Card Detection Video Feed</h1>
+    <div class="video-container">
+        <div class="video-feed">
+            <video id="clientVideo" autoplay muted></video>
+        </div>
+        <div class="video-feed">
+            <img id="processedFrame" alt="Processed Frame">
+        </div>
+    </div>
+    <a href="{{ url_for('index') }}" class="back-button">Back to Home</a>
+
+    <script>
+        const videoElement = document.getElementById('clientVideo');
+
+        // Request access to the client's webcam
+        if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    videoElement.srcObject = stream;
+                })
+                .catch(error => {
+                    console.error("Error accessing webcam: ", error);
+                });
+        } else {
+            alert("Your browser does not support accessing the webcam.");
+        }
+
+        // Send frames to the server periodically
+        function captureFrameAndSend() {
+            const canvas = document.createElement('canvas');
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            const context = canvas.getContext('2d');
+
+            // Draw the current video frame onto the canvas
+            context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+            // Convert the canvas to a data URL (JPEG format)
+            canvas.toBlob(blob => {
+                const formData = new FormData();
+                formData.append('image', blob, 'frame.jpg');
+
+                // Send the frame to the server
+                fetch('/process_frame', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.blob())
+                .then(blob => {
+                    // Optionally display the processed frame returned by the server
+                    const imgUrl = URL.createObjectURL(blob);
+                    document.getElementById('processedFrame').src = imgUrl;
+                })
+                .catch(error => console.error("Error sending frame:", error));
+            }, 'image/jpeg');
+        }
+
+        // Capture and send frames at an interval
+        setInterval(captureFrameAndSend, 1000);  // Adjust interval as needed
+    </script>
+</body>
+</html>

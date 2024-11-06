@@ -1,0 +1,4 @@
+IMG_3797_converted_annotated.txt
+IMG_3817_converted_annotated.txt
+IMG_3822_converted_annotated.txt
+IMG_3831_converted_annotated.txt

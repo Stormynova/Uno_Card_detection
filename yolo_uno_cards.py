@@ -101,15 +101,15 @@ plt.show()
 
 # Validate model performance on test dataset
 test_dataset = "UNO-DATASET--3"
-model.val(data=cwd + "/" + test_dataset + "/data.yaml")
+# model.val(data=cwd + "/" + test_dataset + "/data.yaml")
 
-# Run predictions on test images
-# Save results for visual inspection
-model.predict(
-    source=cwd + "/" + test_dataset + "/test/images",
-    conf=0.25,  # Confidence threshold
-    save=True  # Save predictions
-)
+# # Run predictions on test images
+# # Save results for visual inspection
+# model.predict(
+#     source=cwd + "/" + test_dataset + "/test/images",
+#     conf=0.25,  # Confidence threshold
+#     save=True  # Save predictions
+# )
 
 # Visualization of Model Predictions
 # ================================

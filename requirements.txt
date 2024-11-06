@@ -2,3 +2,5 @@ streamlit
 opencv-python
 ultralytics
 roboflow
+scikit-learn
+flask
