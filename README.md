@@ -153,7 +153,6 @@ uno-env\Scripts\activate
 ```
 
 Now,
-
 1. **Clone the Repository**:
    ```bash
    git clone https://github.com/Stormynova/Uno_Card_detection.git
@@ -165,12 +164,24 @@ Now,
    pip install -r requirements.txt
    ```
 
-3. **Run Real-Time Detection**:
+3. **Run the Application**:
+
+   For real-time webcam detection:
+   ```bash
+   python live_camera_test.py
+   ```
+
+   For testing on a single image:
+   ```bash
+   python single_image_test.py --image path/to/your/image.jpg
+   ```
+
+   For the web application:
    ```bash
    chmod +x runner.bat
    ./runner.bat
    ```
-The above command will run the real-time detection app locally. Open http://localhost:8501/ in your browser to view the app.
+   Open http://localhost:8501/ in your browser to view the web app.
 
 ## Usage
 
