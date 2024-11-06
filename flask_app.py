@@ -187,5 +187,5 @@ def upload_image():
     
     return Response(img_io.getvalue(), mimetype='image/jpeg')
 
-if __name__ == '__main__':
-    app.run(debug=True)
+# if __name__ == '__main__':
+#     app.run(debug=True)
