@@ -1,4 +1,4 @@
-## UNO-DATASET--2: Dyanmic Scenes
+## UNO-DATASET--2: Dynamic Scenes
 
 ### 0. Data Analysis
 #### Histograms of the datasets
